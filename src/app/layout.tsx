@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: 'Amigo Secreto Organizer',
-  description: 'Organize seu amigo secreto de forma fácil e divertida.',
+  description: 'Organiza o teu amigo secreto de forma fácil e divertida.',
 };
 
 export default function RootLayout({
