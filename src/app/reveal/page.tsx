@@ -81,7 +81,7 @@ function RevealContent() {
                 </div>
                 
                 <div className="rounded-md bg-muted p-3">
-                    <p className="text-sm text-muted-foreground">Lembre-se, o valor máximo combinado é de <span className="font-bold text-primary">R$ {data.value}</span>.</p>
+                    <p className="text-sm text-muted-foreground">Lembre-se, o valor máximo combinado é de <span className="font-bold text-primary">€{data.value}</span>.</p>
                 </div>
 
                 <div className="flex items-center justify-center gap-2 pt-4 text-muted-foreground">

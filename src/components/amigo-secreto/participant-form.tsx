@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Gift, UserPlus, DollarSign } from "lucide-react";
+import { Gift, UserPlus, Euro } from "lucide-react";
 import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
@@ -47,8 +47,8 @@ export function ParticipantForm({ addParticipant, setGiftValue, giftValue }: Par
       <CardContent className="space-y-6">
         <div className="space-y-2">
             <Label htmlFor="gift-value" className="flex items-center gap-2 text-base">
-                <DollarSign className="h-5 w-5 text-muted-foreground"/>
-                Valor Máximo do Presente (R$)
+                <Euro className="h-5 w-5 text-muted-foreground"/>
+                Valor Máximo do Presente (€)
             </Label>
             <Input
                 id="gift-value"
