@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Link, ClipboardCopy, Check, Wrench } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from '@/hooks/use-i18n';
 
 interface ResultsDisplayProps {
   assignments: Assignment[];
@@ -13,6 +14,7 @@ interface ResultsDisplayProps {
 }
 
 export function ResultsDisplay({ assignments, giftValue }: ResultsDisplayProps) {
+    const { t } = useI18n();
     const { toast } = useToast();
     const [copiedLink, setCopiedLink] = useState<string | null>(null);
     const [organizerLink, setOrganizerLink] = useState('');
@@ -40,8 +42,8 @@ export function ResultsDisplay({ assignments, giftValue }: ResultsDisplayProps) 
         setTimeout(() => setCopiedLink(null), 2000);
 
         toast({
-            title: "Link Copiado!",
-            description: `O link para ${assignment.gifter.name} foi copiado.`,
+            title: t('link_copied_toast_title'),
+            description: t('link_copied_toast_description', { name: assignment.gifter.name }),
         });
     }
 
@@ -50,8 +52,8 @@ export function ResultsDisplay({ assignments, giftValue }: ResultsDisplayProps) 
         setCopiedLink('organizer');
         setTimeout(() => setCopiedLink(null), 2000);
         toast({
-            title: "Link do Organizador Copiado!",
-            description: `Guarde este link para aceder aos resultados mais tarde.`,
+            title: t('organizer_link_copied_toast_title'),
+            description: t('organizer_link_copied_toast_description'),
         });
     }
 
@@ -60,29 +62,29 @@ export function ResultsDisplay({ assignments, giftValue }: ResultsDisplayProps) 
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-headline">
             <Link className="text-primary"/>
-            Links Individuais
+            {t('individual_links_title')}
         </CardTitle>
         <CardDescription>
-            Copie e envie o link para cada participante. Não se preocupe, o link só revela o amigo secreto de cada um.
+            {t('individual_links_description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="rounded-lg border bg-card p-4 shadow-inner space-y-3">
             <div className='flex justify-between items-center'>
                 <div>
-                    <h4 className="font-semibold flex items-center gap-2"><Wrench className="text-primary" /> Link do Organizador</h4>
-                    <p className="text-sm text-muted-foreground">Guarde este link para voltar a esta página.</p>
+                    <h4 className="font-semibold flex items-center gap-2"><Wrench className="text-primary" /> {t('organizer_link_title')}</h4>
+                    <p className="text-sm text-muted-foreground">{t('organizer_link_description')}</p>
                 </div>
                 <Button variant="secondary" size="sm" onClick={handleCopyOrganizerLink}>
                     {copiedLink === 'organizer' ? (
                         <>
                             <Check className="mr-2 h-4 w-4 text-green-500" />
-                            Copiado!
+                            {t('copied_button')}
                         </>
                     ) : (
                         <>
                             <ClipboardCopy className="mr-2 h-4 w-4" />
-                            Copiar
+                            {t('copy_button')}
                         </>
                     )}
                 </Button>
@@ -97,12 +99,12 @@ export function ResultsDisplay({ assignments, giftValue }: ResultsDisplayProps) 
                 {copiedLink === assignment.gifter.id ? (
                     <>
                         <Check className="mr-2 h-4 w-4 text-green-500" />
-                        Copiado!
+                        {t('copied_button')}
                     </>
                 ) : (
                     <>
                         <ClipboardCopy className="mr-2 h-4 w-4" />
-                        Copiar Link
+                        {t('copy_link_button')}
                     </>
                 )}
               </Button>

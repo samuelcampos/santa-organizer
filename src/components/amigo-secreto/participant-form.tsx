@@ -10,13 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Gift, UserPlus, Euro } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/hooks/use-i18n";
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: "O nome deve ter pelo menos 2 caracteres." }).max(50, { message: "O nome não pode ter mais de 50 caracteres." }),
-  description: z.string().max(200, { message: "A descrição não pode ter mais de 200 caracteres." }).optional(),
+const formSchema = (t: (key: string) => string) => z.object({
+  name: z.string().min(2, { message: t('validation_name_min') }).max(50, { message: t('validation_name_max') }),
+  description: z.string().max(200, { message: t('validation_desc_max') }).optional(),
 });
 
-type FormValues = z.infer<typeof formSchema>;
 
 interface ParticipantFormProps {
   addParticipant: (name: string, description: string) => void;
@@ -25,13 +25,17 @@ interface ParticipantFormProps {
 }
 
 export function ParticipantForm({ addParticipant, setGiftValue, giftValue }: ParticipantFormProps) {
+  const { t } = useI18n();
+
+  type FormValues = z.infer<ReturnType<typeof formSchema>>;
+
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema(t)),
     defaultValues: { name: "", description: "" },
   });
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    addParticipant(data.name, data.description || "Sem sugestões.");
+    addParticipant(data.name, data.description || t('no_suggestions'));
     form.reset();
   };
 
@@ -40,15 +44,15 @@ export function ParticipantForm({ addParticipant, setGiftValue, giftValue }: Par
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-headline">
             <Gift className="text-primary"/> 
-            1. Configure o Jogo
+            {t('step1_title')}
         </CardTitle>
-        <CardDescription>Defina o valor do presente e adicione os participantes.</CardDescription>
+        <CardDescription>{t('step1_description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
             <Label htmlFor="gift-value" className="flex items-center gap-2 text-base">
                 <Euro className="h-5 w-5 text-muted-foreground"/>
-                Valor Máximo do Presente (€)
+                {t('max_gift_value_label')}
             </Label>
             <Input
                 id="gift-value"
@@ -56,7 +60,7 @@ export function ParticipantForm({ addParticipant, setGiftValue, giftValue }: Par
                 value={giftValue}
                 onChange={(e) => setGiftValue(Number(e.target.value) > 0 ? Number(e.target.value) : 0)}
                 className="text-lg"
-                placeholder="Ex: 50"
+                placeholder={t('gift_value_placeholder')}
             />
         </div>
 
@@ -67,9 +71,9 @@ export function ParticipantForm({ addParticipant, setGiftValue, giftValue }: Par
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nome do Participante</FormLabel>
+                  <FormLabel>{t('participant_name_label')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: João Silva" {...field} />
+                    <Input placeholder={t('participant_name_placeholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -80,9 +84,9 @@ export function ParticipantForm({ addParticipant, setGiftValue, giftValue }: Par
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Sugestões de Presente (opcional)</FormLabel>
+                  <FormLabel>{t('gift_suggestions_label')}</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Ex: Livros de ficção, chocolates, etc." {...field} />
+                    <Textarea placeholder={t('gift_suggestions_placeholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -90,7 +94,7 @@ export function ParticipantForm({ addParticipant, setGiftValue, giftValue }: Par
             />
             <Button type="submit" className="w-full">
               <UserPlus className="mr-2 h-4 w-4" />
-              Adicionar Participante
+              {t('add_participant_button')}
             </Button>
           </form>
         </Form>

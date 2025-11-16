@@ -11,8 +11,11 @@ import { Logo } from "@/components/logo";
 import { Shuffle, PartyPopper, RotateCcw } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
+import { useI18n } from "@/hooks/use-i18n";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export default function Home() {
+  const { t } = useI18n();
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [giftValue, setGiftValue] = useState<number>(50);
   const [assignments, setAssignments] = useState<Assignment[] | null>(null);
@@ -35,20 +38,20 @@ export default function Home() {
       } catch (e) {
         console.error("Failed to parse organizer data", e);
         toast({
-            title: "Erro ao carregar dados",
-            description: "Não foi possível carregar os dados do sorteio a partir do link.",
+            title: t('load_data_error_title'),
+            description: t('load_data_error_description'),
             variant: "destructive",
         });
       }
     }
-  }, [searchParams, toast]);
+  }, [searchParams, toast, t]);
 
 
   const addParticipant = (name: string, description: string) => {
     if (participants.find(p => p.name.trim().toLowerCase() === name.trim().toLowerCase())) {
         toast({
-            title: "Participante já existe",
-            description: `O nome "${name}" já foi adicionado à lista.`,
+            title: t('participant_exists_error_title'),
+            description: t('participant_exists_error_description', { name }),
             variant: "destructive",
         });
         return;
@@ -64,8 +67,8 @@ export default function Home() {
   const handleDraw = () => {
     if (participants.length < 2) {
       toast({
-        title: "Erro no sorteio",
-        description: "É necessário ter pelo menos 2 participantes para realizar o sorteio.",
+        title: t('draw_error_title'),
+        description: t('draw_error_description'),
         variant: "destructive",
       });
       return;
@@ -103,8 +106,8 @@ export default function Home() {
              // More complex logic would be needed for > 2, but random shuffle is very likely to succeed.
              // For simplicity, we accept the small chance of failure and let the user re-draw.
              toast({
-                title: "Ocorreu um erro no sorteio",
-                description: "Por favor, tente sortear novamente.",
+                title: t('draw_internal_error_title'),
+                description: t('draw_internal_error_description'),
                 variant: "destructive",
              });
              return;
@@ -124,10 +127,13 @@ export default function Home() {
 
   return (
     <main className="container mx-auto flex min-h-screen flex-col items-center p-4 md:p-8">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       <header className="mb-8 text-center">
-        <Logo className="justify-center"/>
+        <Logo />
         <p className="mt-2 text-muted-foreground">
-          Organize seu amigo secreto de forma fácil e divertida.
+          {t('app_subtitle')}
         </p>
       </header>
 
@@ -136,16 +142,16 @@ export default function Home() {
             <Card className="mb-6 shadow-lg border-accent">
                 <CardContent className="p-6 text-center">
                     <PartyPopper className="mx-auto h-16 w-16 text-accent animate-bounce" />
-                    <h2 className="mt-4 text-3xl font-bold text-primary font-headline">Sorteio Realizado!</h2>
+                    <h2 className="mt-4 text-3xl font-bold text-primary font-headline">{t('draw_complete_title')}</h2>
                     <p className="mt-2 text-muted-foreground">
-                        Agora cada participante pode descobrir quem tirou através do seu link secreto.
+                        {t('draw_complete_subtitle')}
                     </p>
                 </CardContent>
             </Card>
             <ResultsDisplay assignments={assignments} giftValue={giftValue} />
             <Button onClick={resetGame} variant="outline" className="mt-8 w-full">
                 <RotateCcw className="mr-2 h-4 w-4" />
-                Começar um Novo Sorteio
+                {t('start_new_draw_button')}
             </Button>
         </div>
       ) : (
@@ -166,11 +172,11 @@ export default function Home() {
                     className="w-full text-lg py-6 bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg transition-transform transform hover:scale-105"
                 >
                 <Shuffle className="mr-2 h-6 w-6" />
-                Realizar Sorteio!
+                {t('perform_draw_button')}
                 </Button>
                 {participants.length < 2 && (
                     <p className="text-center text-sm text-destructive/80 mt-2">
-                        Adicione pelo menos mais {2 - participants.length} participante para poder sortear.
+                        {t('add_more_participants_message', { count: 2 - participants.length })}
                     </p>
                 )}
             </div>

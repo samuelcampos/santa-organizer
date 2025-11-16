@@ -2,6 +2,7 @@ import type { Participant } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, X, User } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface ParticipantListProps {
   participants: Participant[];
@@ -9,17 +10,19 @@ interface ParticipantListProps {
 }
 
 export function ParticipantList({ participants, removeParticipant }: ParticipantListProps) {
+  const { t } = useI18n();
+
   if (participants.length === 0) {
     return (
         <Card className="shadow-lg border-dashed">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 font-headline text-muted-foreground">
                     <Users/>
-                    Lista de Participantes
+                    {t('participant_list_title')}
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <p className="text-center text-muted-foreground">Adicione o primeiro participante para começar!</p>
+                <p className="text-center text-muted-foreground">{t('add_first_participant_message')}</p>
             </CardContent>
         </Card>
     );
@@ -30,9 +33,9 @@ export function ParticipantList({ participants, removeParticipant }: Participant
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-headline">
             <Users className="text-primary"/>
-            Lista de Participantes ({participants.length})
+            {t('participant_list_title')} ({participants.length})
         </CardTitle>
-        <CardDescription>Revise a lista antes de realizar o sorteio.</CardDescription>
+        <CardDescription>{t('participant_list_description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <ul className="space-y-3">
@@ -47,7 +50,7 @@ export function ParticipantList({ participants, removeParticipant }: Participant
                     <p className="text-sm text-muted-foreground break-words">{p.description}</p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => removeParticipant(p.id)} aria-label={`Remover ${p.name}`} className="flex-shrink-0 self-end sm:self-center">
+              <Button variant="ghost" size="icon" onClick={() => removeParticipant(p.id)} aria-label={t('remove_participant_label', { name: p.name })} className="flex-shrink-0 self-end sm:self-center">
                 <X className="h-4 w-4 text-destructive" />
               </Button>
             </li>
