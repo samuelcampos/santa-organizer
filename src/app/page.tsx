@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Participant, Assignment } from "@/lib/types";
 import { ParticipantForm } from "@/components/amigo-secreto/participant-form";
 import { ParticipantList } from "@/components/amigo-secreto/participant-list";
@@ -10,12 +10,39 @@ import { useToast } from "@/hooks/use-toast";
 import { Logo } from "@/components/logo";
 import { Shuffle, PartyPopper, RotateCcw } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [giftValue, setGiftValue] = useState<number>(50);
   const [assignments, setAssignments] = useState<Assignment[] | null>(null);
   const { toast } = useToast();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const data = searchParams.get('organizerData');
+    if (data) {
+      try {
+        const decodedData = decodeURIComponent(atob(data));
+        const parsedData = JSON.parse(decodedData);
+        if (parsedData.assignments && parsedData.giftValue) {
+          setAssignments(parsedData.assignments);
+          setGiftValue(parsedData.giftValue);
+          // Reconstruct participants from assignments
+          const allParticipants = parsedData.assignments.map((a: Assignment) => a.gifter);
+          setParticipants(allParticipants);
+        }
+      } catch (e) {
+        console.error("Failed to parse organizer data", e);
+        toast({
+            title: "Erro ao carregar dados",
+            description: "Não foi possível carregar os dados do sorteio a partir do link.",
+            variant: "destructive",
+        });
+      }
+    }
+  }, [searchParams, toast]);
+
 
   const addParticipant = (name: string, description: string) => {
     if (participants.find(p => p.name.trim().toLowerCase() === name.trim().toLowerCase())) {
@@ -44,16 +71,45 @@ export default function Home() {
       return;
     }
 
-    const shuffled = [...participants];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    let shuffled = [...participants];
+    let newAssignments: Assignment[] = [];
+    let attempts = 0;
+
+    // This loop prevents a participant from drawing themselves.
+    while (attempts < 10) {
+        shuffled = [...participants].sort(() => Math.random() - 0.5);
+        newAssignments = shuffled.map((participant, index) => ({
+            gifter: participant,
+            receiver: shuffled[(index + 1) % shuffled.length],
+        }));
+
+        const selfDraw = newAssignments.some(a => a.gifter.id === a.receiver.id);
+        if (!selfDraw) {
+            break;
+        }
+        attempts++;
     }
 
-    const newAssignments: Assignment[] = shuffled.map((participant, index) => ({
-      gifter: participant,
-      receiver: shuffled[(index + 1) % shuffled.length],
-    }));
+    // Fallback for the rare case the loop fails (e.g., only 2 participants)
+    if (newAssignments.some(a => a.gifter.id === a.receiver.id)) {
+        // Simple swap for 2 participants drawing themselves
+        if (newAssignments.length === 2) {
+             const [a1, a2] = newAssignments;
+             newAssignments = [
+                 { gifter: a1.gifter, receiver: a2.receiver },
+                 { gifter: a2.gifter, receiver: a1.receiver }
+             ];
+        } else {
+             // More complex logic would be needed for > 2, but random shuffle is very likely to succeed.
+             // For simplicity, we accept the small chance of failure and let the user re-draw.
+             toast({
+                title: "Ocorreu um erro no sorteio",
+                description: "Por favor, tente sortear novamente.",
+                variant: "destructive",
+             });
+             return;
+        }
+    }
 
     setAssignments(newAssignments);
   };
@@ -62,6 +118,8 @@ export default function Home() {
     setParticipants([]);
     setAssignments(null);
     setGiftValue(50);
+    // Clear URL params
+    window.history.pushState({}, '', '/');
   };
 
   return (
