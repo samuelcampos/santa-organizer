@@ -65,6 +65,19 @@ export function HomePageContent() {
     setParticipants(prev => prev.filter(p => p.id !== id));
   };
 
+  const updateParticipant = (id: string, name: string, description: string) => {
+    // Check if another participant already has the new name
+    if (participants.some(p => p.id !== id && p.name.trim().toLowerCase() === name.trim().toLowerCase())) {
+        toast({
+            title: t('participant_exists_error_title'),
+            description: t('participant_exists_error_description', { name }),
+            variant: "destructive",
+        });
+        return;
+    }
+    setParticipants(prev => prev.map(p => p.id === id ? { ...p, name: name.trim(), description: description.trim() } : p));
+  };
+
   const handleDraw = () => {
     if (participants.length < 2) {
       toast({
@@ -161,7 +174,11 @@ export function HomePageContent() {
           
           {participants.length > 0 && (
             <div className="animate-fade-in">
-                <ParticipantList participants={participants} removeParticipant={removeParticipant} />
+                <ParticipantList 
+                    participants={participants} 
+                    removeParticipant={removeParticipant} 
+                    updateParticipant={updateParticipant}
+                />
             </div>
           )}
 

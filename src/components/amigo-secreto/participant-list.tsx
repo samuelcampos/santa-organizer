@@ -1,15 +1,17 @@
 import type { Participant } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, X, User } from "lucide-react";
+import { Users, X, User, Pencil } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
+import { EditParticipantDialog } from "./edit-participant-dialog";
 
 interface ParticipantListProps {
   participants: Participant[];
   removeParticipant: (id: string) => void;
+  updateParticipant: (id: string, name: string, description: string) => void;
 }
 
-export function ParticipantList({ participants, removeParticipant }: ParticipantListProps) {
+export function ParticipantList({ participants, removeParticipant, updateParticipant }: ParticipantListProps) {
   const { t } = useI18n();
 
   if (participants.length === 0) {
@@ -50,9 +52,16 @@ export function ParticipantList({ participants, removeParticipant }: Participant
                     <p className="text-sm text-muted-foreground break-words">{p.description}</p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => removeParticipant(p.id)} aria-label={t('remove_participant_label', { name: p.name })} className="flex-shrink-0 self-end sm:self-center">
-                <X className="h-4 w-4 text-destructive" />
-              </Button>
+              <div className="flex self-end sm:self-center">
+                <EditParticipantDialog participant={p} onSave={updateParticipant}>
+                    <Button variant="ghost" size="icon" aria-label={t('edit_participant_label', { name: p.name })}>
+                        <Pencil className="h-4 w-4 text-muted-foreground" />
+                    </Button>
+                </EditParticipantDialog>
+                <Button variant="ghost" size="icon" onClick={() => removeParticipant(p.id)} aria-label={t('remove_participant_label', { name: p.name })} className="flex-shrink-0">
+                    <X className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
             </li>
           ))}
         </ul>
