@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -46,6 +47,34 @@ export function HomePageContent() {
       }
     }
   }, [searchParams, toast, t]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      let message = '';
+      
+      // Before the draw, if there are participants
+      if (participants.length > 0 && !assignments) {
+        message = t('leave_warning_before_draw');
+      }
+      
+      // After the draw
+      if (assignments) {
+        message = t('leave_warning_after_draw');
+      }
+
+      if (message) {
+        event.preventDefault();
+        event.returnValue = message;
+        return message;
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [participants, assignments, t]);
 
 
   const addParticipant = (name: string, description: string) => {

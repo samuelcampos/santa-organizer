@@ -1,3 +1,4 @@
+
 {
   "app_name": "Secret Santa",
   "app_subtitle": "Organize your secret santa in a fun and easy way.",
@@ -59,5 +60,7 @@
   "toggle_language": "Toggle language",
   "share_title": "Share this App!",
   "share_text": "Check out this awesome Secret Santa organizer!",
-  "share_email_subject": "Secret Santa Organizer"
+  "share_email_subject": "Secret Santa Organizer",
+  "leave_warning_before_draw": "Are you sure you want to leave? All participants will be lost.",
+  "leave_warning_after_draw": "Are you sure you want to leave? Make sure you have saved the organizer's link to access the results later."
 }

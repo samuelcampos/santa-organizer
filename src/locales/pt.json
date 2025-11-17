@@ -1,3 +1,4 @@
+
 {
   "app_name": "Amigo Secreto",
   "app_subtitle": "Organiza o teu amigo secreto de forma fácil e divertida.",
@@ -59,5 +60,7 @@
   "toggle_language": "Mudar idioma",
   "share_title": "Partilha esta App!",
   "share_text": "Vê este incrível organizador de Amigo Secreto!",
-  "share_email_subject": "Organizador de Amigo Secreto"
+  "share_email_subject": "Organizador de Amigo Secreto",
+  "leave_warning_before_draw": "Tens a certeza que queres sair? Todos os participantes serão perdidos.",
+  "leave_warning_after_draw": "Tens a certeza que queres sair? Garante que guardaste o link do organizador para acederes aos resultados mais tarde."
 }
