@@ -51,5 +51,8 @@
   "reveal_gift_suggestions_title": "Sugestões de Presente:",
   "reveal_value_limit_reminder": "Lembre-se, o valor máximo combinado é de €{{value}}.",
   "reveal_happy_shopping": "Boas compras!",
-  "toggle_language": "Mudar idioma"
+  "toggle_language": "Mudar idioma",
+  "share_title": "Partilhe esta App!",
+  "share_text": "Veja este incrível organizador de Amigo Secreto!",
+  "share_email_subject": "Organizador de Amigo Secreto"
 }

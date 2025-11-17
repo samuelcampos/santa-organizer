@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
 import { useI18n } from "@/hooks/use-i18n";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { ShareSection } from "./share-section";
 
 export function HomePageContent() {
   const { t } = useI18n();
@@ -183,6 +184,8 @@ export function HomePageContent() {
           )}
         </div>
       )}
+
+      <ShareSection />
     </main>
   );
 }

@@ -51,5 +51,8 @@
   "reveal_gift_suggestions_title": "Gift Suggestions:",
   "reveal_value_limit_reminder": "Remember, the combined maximum value is €{{value}}.",
   "reveal_happy_shopping": "Happy shopping!",
-  "toggle_language": "Toggle language"
+  "toggle_language": "Toggle language",
+  "share_title": "Share this App!",
+  "share_text": "Check out this awesome Secret Santa organizer!",
+  "share_email_subject": "Secret Santa Organizer"
 }
