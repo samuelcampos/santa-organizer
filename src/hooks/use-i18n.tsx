@@ -28,11 +28,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (browserLang === 'pt') {
       setLanguage('pt');
     }
-    const html = document.documentElement;
-    if (html) {
-      html.lang = language;
-    }
-  }, [language]);
+  }, []);
 
   const t = useCallback((key: string, replacements?: { [key: string]: string | number }) => {
     let translation = getNestedTranslation(language, key);
