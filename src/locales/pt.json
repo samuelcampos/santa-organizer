@@ -1,6 +1,6 @@
 {
   "app_name": "Amigo Secreto Organizer",
-  "app_subtitle": "Organize o teu amigo secreto de forma fácil e divertida.",
+  "app_subtitle": "Organiza o teu amigo secreto de forma fácil e divertida.",
   "load_data_error_title": "Erro ao Carregar Dados",
   "load_data_error_description": "Não foi possível carregar os dados do sorteio a partir do link.",
   "participant_exists_error_title": "Participante já existe",
