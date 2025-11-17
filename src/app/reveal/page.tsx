@@ -9,6 +9,7 @@ import { Gift, Heart } from "lucide-react";
 import RevealLoading from './loading';
 import { useI18n } from '@/hooks/use-i18n';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { ShareSection } from '@/components/amigo-secreto/share-section';
 
 interface RevealData {
     gifter: string;
@@ -109,6 +110,9 @@ export default function RevealPage() {
             <Suspense fallback={<RevealLoading />}>
                 <RevealContent />
             </Suspense>
+            <div className='mt-8 w-full max-w-2xl'>
+                <ShareSection />
+            </div>
         </main>
     );
 }
