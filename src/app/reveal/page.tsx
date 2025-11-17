@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Suspense } from 'react';
@@ -24,8 +25,7 @@ function RevealContent() {
         const encodedData = searchParams.get('data');
         if (encodedData) {
             try {
-                const decodedParam = decodeURIComponent(encodedData);
-                const decoded = decodeData<RevealData>(decodedParam);
+                const decoded = decodeData<RevealData>(encodedData);
 
                 if (decoded.gifter && decoded.receiver && decoded.description && decoded.value) {
                     setData(decoded);

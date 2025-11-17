@@ -1,3 +1,4 @@
+
 import pako from 'pako';
 
 // Encodes a string to a URL-safe Base64 string.

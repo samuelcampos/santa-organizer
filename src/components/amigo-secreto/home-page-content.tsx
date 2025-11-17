@@ -29,8 +29,7 @@ export function HomePageContent() {
     const data = searchParams.get('organizerData');
     if (data) {
       try {
-        const decodedParam = decodeURIComponent(data);
-        const parsedData = decodeData<{ assignments: Assignment[]; giftValue: number }>(decodedParam);
+        const parsedData = decodeData<{ assignments: Assignment[]; giftValue: number }>(data);
         if (parsedData.assignments && parsedData.giftValue) {
           setAssignments(parsedData.assignments);
           setGiftValue(parsedData.giftValue);

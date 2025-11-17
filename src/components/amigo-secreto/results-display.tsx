@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -23,7 +24,7 @@ export function ResultsDisplay({ assignments, giftValue }: ResultsDisplayProps) 
     useEffect(() => {
         const data = { assignments, giftValue };
         const encodedData = encodeData(data);
-        const url = `${window.location.origin}/?organizerData=${encodeURIComponent(encodedData)}`;
+        const url = `${window.location.origin}/?organizerData=${encodedData}`;
         setOrganizerLink(url);
     }, [assignments, giftValue]);
 
@@ -37,7 +38,7 @@ export function ResultsDisplay({ assignments, giftValue }: ResultsDisplayProps) 
         
         const encodedParams = encodeData(data);
     
-        const revealUrl = `${window.location.origin}/reveal?data=${encodeURIComponent(encodedParams)}`;
+        const revealUrl = `${window.location.origin}/reveal?data=${encodedParams}`;
         navigator.clipboard.writeText(revealUrl);
 
         setCopiedLink(assignment.gifter.id);
