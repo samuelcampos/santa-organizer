@@ -1,5 +1,5 @@
 {
-  "app_name": "Secret Santa Organizer",
+  "app_name": "Secret Santa",
   "app_subtitle": "Organize your secret santa in a fun and easy way.",
   "load_data_error_title": "Error Loading Data",
   "load_data_error_description": "Could not load draw data from the link.",
