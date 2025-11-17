@@ -14,6 +14,7 @@ import { useSearchParams } from "next/navigation";
 import { useI18n } from "@/hooks/use-i18n";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ShareSection } from "./share-section";
+import { decodeData } from "@/lib/url-data";
 
 export function HomePageContent() {
   const { t } = useI18n();
@@ -27,8 +28,7 @@ export function HomePageContent() {
     const data = searchParams.get('organizerData');
     if (data) {
       try {
-        const decodedData = decodeURIComponent(atob(data));
-        const parsedData = JSON.parse(decodedData);
+        const parsedData = decodeData<{ assignments: Assignment[]; giftValue: number }>(data);
         if (parsedData.assignments && parsedData.giftValue) {
           setAssignments(parsedData.assignments);
           setGiftValue(parsedData.giftValue);

@@ -10,13 +10,9 @@ import RevealLoading from './loading';
 import { useI18n } from '@/hooks/use-i18n';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { ShareSection } from '@/components/amigo-secreto/share-section';
+import { decodeData } from '@/lib/url-data';
+import type { RevealData } from '@/lib/types';
 
-interface RevealData {
-    gifter: string;
-    receiver: string;
-    description: string;
-    value: string;
-}
 
 function RevealContent() {
     const { t } = useI18n();
@@ -28,15 +24,10 @@ function RevealContent() {
         const encodedData = searchParams.get('data');
         if (encodedData) {
             try {
-                const decodedData = decodeURIComponent(atob(encodedData));
-                const params = new URLSearchParams(decodedData);
-                const gifter = params.get('gifter');
-                const receiver = params.get('receiver');
-                const description = params.get('description');
-                const value = params.get('value');
+                const decoded = decodeData<RevealData>(encodedData);
 
-                if (gifter && receiver && description && value) {
-                    setData({ gifter, receiver, description, value });
+                if (decoded.gifter && decoded.receiver && decoded.description && decoded.value) {
+                    setData(decoded);
                 } else {
                     setError(t('reveal_incomplete_info_error'));
                 }

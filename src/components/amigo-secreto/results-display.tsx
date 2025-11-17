@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import type { Assignment } from "@/lib/types";
+import type { Assignment, RevealData } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link, ClipboardCopy, Check, Wrench } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from '@/hooks/use-i18n';
+import { encodeData } from '@/lib/url-data';
 
 interface ResultsDisplayProps {
   assignments: Assignment[];
@@ -21,19 +22,20 @@ export function ResultsDisplay({ assignments, giftValue }: ResultsDisplayProps) 
 
     useEffect(() => {
         const data = { assignments, giftValue };
-        const encodedData = btoa(encodeURIComponent(JSON.stringify(data)));
+        const encodedData = encodeData(data);
         const url = `${window.location.origin}/?organizerData=${encodedData}`;
         setOrganizerLink(url);
     }, [assignments, giftValue]);
 
     const handleCopyLink = (assignment: Assignment) => {
-        const params = new URLSearchParams();
-        params.set('gifter', assignment.gifter.name);
-        params.set('receiver', assignment.receiver.name);
-        params.set('description', assignment.receiver.description);
-        params.set('value', giftValue.toString());
+        const data: RevealData = {
+          gifter: assignment.gifter.name,
+          receiver: assignment.receiver.name,
+          description: assignment.receiver.description,
+          value: giftValue.toString()
+        }
         
-        const encodedParams = btoa(encodeURIComponent(params.toString()));
+        const encodedParams = encodeData(data);
     
         const revealUrl = `${window.location.origin}/reveal?data=${encodedParams}`;
         navigator.clipboard.writeText(revealUrl);
