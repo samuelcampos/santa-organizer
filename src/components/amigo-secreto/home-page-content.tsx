@@ -117,46 +117,41 @@ export function HomePageContent() {
       return;
     }
 
-    let shuffled = [...participants];
-    let newAssignments: Assignment[] = [];
-    let attempts = 0;
+    const givers = [...participants];
+    let receivers = [...participants];
 
-    // This loop prevents a participant from drawing themselves.
-    while (attempts < 10) {
-        shuffled = [...participants].sort(() => Math.random() - 0.5);
-        newAssignments = shuffled.map((participant, index) => ({
-            gifter: participant,
-            receiver: shuffled[(index + 1) % shuffled.length],
-        }));
-
-        const selfDraw = newAssignments.some(a => a.gifter.id === a.receiver.id);
-        if (!selfDraw) {
-            break;
-        }
-        attempts++;
+    // Shuffle both lists to ensure randomness
+    for (let i = givers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [givers[i], givers[j]] = [givers[j], givers[i]];
+        [receivers[i], receivers[j]] = [receivers[j], receivers[i]];
     }
 
-    // Fallback for the rare case the loop fails (e.g., only 2 participants)
-    if (newAssignments.some(a => a.gifter.id === a.receiver.id)) {
-        // Simple swap for 2 participants drawing themselves
-        if (newAssignments.length === 2) {
-             const [a1, a2] = newAssignments;
-             newAssignments = [
-                 { gifter: a1.gifter, receiver: a2.receiver },
-                 { gifter: a2.gifter, receiver: a1.receiver }
-             ];
-        } else {
-             // More complex logic would be needed for > 2, but random shuffle is very likely to succeed.
-             // For simplicity, we accept the small chance of failure and let the user re-draw.
-             toast({
-                title: t('draw_internal_error_title'),
-                description: t('draw_internal_error_description'),
-                variant: "destructive",
-             });
-             return;
-        }
-    }
+    const newAssignments: Assignment[] = [];
+    let selfDrawFound: boolean;
 
+    do {
+      selfDrawFound = false;
+      for(let i=0; i<givers.length; i++) {
+        if(givers[i].id === receivers[i].id) {
+          // If a self-draw is found, swap with the next receiver.
+          // This simple swap works for nearly all cases.
+          const nextIndex = (i + 1) % receivers.length;
+          [receivers[i], receivers[nextIndex]] = [receivers[nextIndex], receivers[i]];
+          selfDrawFound = true; // Set flag to re-check the list
+          break; // Exit the for-loop and restart the check
+        }
+      }
+    } while (selfDrawFound);
+
+
+    for (let i = 0; i < givers.length; i++) {
+        newAssignments.push({
+            gifter: givers[i],
+            receiver: receivers[i],
+        });
+    }
+    
     setAssignments(newAssignments);
   };
   
