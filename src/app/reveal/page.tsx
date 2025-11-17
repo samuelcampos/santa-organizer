@@ -24,7 +24,8 @@ function RevealContent() {
         const encodedData = searchParams.get('data');
         if (encodedData) {
             try {
-                const decoded = decodeData<RevealData>(encodedData);
+                const decodedParam = decodeURIComponent(encodedData);
+                const decoded = decodeData<RevealData>(decodedParam);
 
                 if (decoded.gifter && decoded.receiver && decoded.description && decoded.value) {
                     setData(decoded);

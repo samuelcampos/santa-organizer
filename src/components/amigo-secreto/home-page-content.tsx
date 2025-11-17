@@ -29,7 +29,8 @@ export function HomePageContent() {
     const data = searchParams.get('organizerData');
     if (data) {
       try {
-        const parsedData = decodeData<{ assignments: Assignment[]; giftValue: number }>(data);
+        const decodedParam = decodeURIComponent(data);
+        const parsedData = decodeData<{ assignments: Assignment[]; giftValue: number }>(decodedParam);
         if (parsedData.assignments && parsedData.giftValue) {
           setAssignments(parsedData.assignments);
           setGiftValue(parsedData.giftValue);
@@ -117,32 +118,39 @@ export function HomePageContent() {
       return;
     }
 
-    const givers = [...participants];
+    let givers = [...participants];
     let receivers = [...participants];
+    let newAssignments: Assignment[] = [];
 
-    // Shuffle both lists to ensure randomness
-    for (let i = givers.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [givers[i], givers[j]] = [givers[j], givers[i]];
-        [receivers[i], receivers[j]] = [receivers[j], receivers[i]];
-    }
-
-    const newAssignments: Assignment[] = [];
-    let selfDrawFound: boolean;
-
-    do {
-      selfDrawFound = false;
-      for(let i=0; i<givers.length; i++) {
-        if(givers[i].id === receivers[i].id) {
-          // If a self-draw is found, swap with the next receiver.
-          // This simple swap works for nearly all cases.
-          const nextIndex = (i + 1) % receivers.length;
-          [receivers[i], receivers[nextIndex]] = [receivers[nextIndex], receivers[i]];
-          selfDrawFound = true; // Set flag to re-check the list
-          break; // Exit the for-loop and restart the check
+    let success = false;
+    // It's theoretically possible (though astronomically unlikely for more than a few participants)
+    // for the shuffle to result in a list where a perfect derangement is impossible with simple swaps.
+    // A while loop ensures we reshuffle and try again if that happens.
+    while(!success) {
+        // Shuffle receivers
+        for (let i = receivers.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [receivers[i], receivers[j]] = [receivers[j], receivers[i]];
         }
-      }
-    } while (selfDrawFound);
+
+        let hasSelfDraw = false;
+        for (let i = 0; i < givers.length; i++) {
+            if (givers[i].id === receivers[i].id) {
+                // If a self-draw is found at the last position, we must restart.
+                if (i === givers.length - 1) {
+                    hasSelfDraw = true;
+                    break;
+                }
+                // Otherwise, swap with the next receiver.
+                [receivers[i], receivers[i + 1]] = [receivers[i + 1], receivers[i]];
+            }
+        }
+        
+        // If we finished a loop without a self-draw at the end, the list is good.
+        if (!hasSelfDraw) {
+            success = true;
+        }
+    }
 
 
     for (let i = 0; i < givers.length; i++) {
