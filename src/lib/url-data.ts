@@ -7,16 +7,16 @@ function toBase64(str: string): string {
         String.fromCharCode(parseInt(p1, 16))
       )
     )
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+    .replace(/\+/g, '-') // Replace + with -
+    .replace(/\//g, '_') // Replace / with _
+    .replace(/=/g, ''); // Remove padding
 }
 
 // Decodes a URL-safe Base64 string back to a string.
 function fromBase64(str: string): string {
-    str = str.replace(/-/g, '+').replace(/_/g, '/');
+    str = str.replace(/-/g, '+').replace(/_/g, '/'); // Restore + and /
     while (str.length % 4) {
-      str += '=';
+      str += '='; // Restore padding
     }
     return decodeURIComponent(
       Array.prototype.map
