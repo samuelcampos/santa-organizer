@@ -17,7 +17,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 export function HomePageContent() {
   const { t } = useI18n();
   const [participants, setParticipants] = useState<Participant[]>([]);
-  const [giftValue, setGiftValue] = useState<number>(50);
+  const [giftValue, setGiftValue] = useState<number>(30);
   const [assignments, setAssignments] = useState<Assignment[] | null>(null);
   const { toast } = useToast();
   const searchParams = useSearchParams();
@@ -120,7 +120,7 @@ export function HomePageContent() {
   const resetGame = () => {
     setParticipants([]);
     setAssignments(null);
-    setGiftValue(50);
+    setGiftValue(30);
     // Clear URL params
     window.history.pushState({}, '', '/');
   };
