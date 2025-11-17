@@ -1,29 +1,42 @@
 import pako from 'pako';
 
-// Helper function to encode data to a URL-safe string
-function toBase64(data: Uint8Array): string {
-    return btoa(String.fromCharCode.apply(null, Array.from(data)));
+// Encodes a string to a URL-safe Base64 string.
+function toBase64(str: string): string {
+    return btoa(
+      encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) =>
+        String.fromCharCode(parseInt(p1, 16))
+      )
+    )
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
 }
 
-// Helper function to decode data from a URL-safe string
-function fromBase64(str: string): Uint8Array {
-    const binaryString = atob(str);
-    const len = binaryString.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
+// Decodes a URL-safe Base64 string back to a string.
+function fromBase64(str: string): string {
+    str = str.replace(/-/g, '+').replace(/_/g, '/');
+    while (str.length % 4) {
+      str += '=';
     }
-    return bytes;
+    return decodeURIComponent(
+      Array.prototype.map
+        .call(
+          atob(str),
+          (c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        )
+        .join('')
+    );
 }
+
 
 export function encodeData(data: any): string {
     const jsonString = JSON.stringify(data);
-    const compressed = pako.gzip(jsonString);
-    return toBase64(compressed);
+    const compressed = pako.gzip(jsonString, { to: 'string' });
+    return toBase64(compressed as string);
 }
 
 export function decodeData<T>(encodedData: string): T {
-    const compressed = fromBase64(encodedData);
-    const jsonString = pako.ungzip(compressed, { to: 'string' });
+    const compressedString = fromBase64(encodedData);
+    const jsonString = pako.ungzip(compressedString, { to: 'string' });
     return JSON.parse(jsonString) as T;
 }
