@@ -92,8 +92,8 @@ function RevealContent() {
 
 export default function RevealPage() {
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gradient-to-br from-background to-primary/10">
-             <div className="absolute top-8">
+        <main className="flex min-h-screen flex-col items-center justify-start p-4 bg-gradient-to-br from-background to-primary/10 relative">
+             <div className="pt-8 pb-8 w-full flex justify-center">
                 <Logo />
             </div>
              <div className="absolute top-4 right-4">
@@ -102,7 +102,7 @@ export default function RevealPage() {
             <Suspense fallback={<RevealLoading />}>
                 <RevealContent />
             </Suspense>
-            <div className='mt-8 w-full max-w-2xl'>
+            <div className='mt-8 w-full max-w-2xl pb-8'>
                 <ShareSection />
             </div>
         </main>
